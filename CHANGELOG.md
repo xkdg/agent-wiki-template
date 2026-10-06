@@ -21,6 +21,8 @@
 - Роли: `scout`, `implementer`, `reviewer`, `verifier`, `investigator`, `doc-auditor`.
 - Скиллы: `brief` — бриф фичи (паттерны из obra/superpowers `brainstorming`, github/spec-kit `clarify`, ECC `intent-driven-development`); `init`, `sync`, `upstream`.
 
+**README** — коротко: что делает плагин, установка, развёртывание, использование.
+
 ## 1.0.0 — 2026-08-24
 
 Шаблон: `CLAUDE.md` с протоколом `documentation_action`, вики (`INDEX`, `QUICK_REF`, `PRODUCT`, `CONVENTIONS`, ADR, ТЗ, `BACKLOG`). Разворачивался копированием.

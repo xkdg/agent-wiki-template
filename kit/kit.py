@@ -7,6 +7,7 @@
     python kit/kit.py sync   --project <корень проекта> [--ref ...] [--dry-run]
     python kit/kit.py status --project <корень проекта>
     python kit/kit.py stamp  --project <корень проекта> [--ref ...]
+    python kit/kit.py take   --project <корень проекта> --path <файл ядра> [--path ...] [--ref ...]
 
 Состав и тип файлов — kit/MANIFEST: core перезаписывается при sync, если в проекте его не правили;
 seed создаётся один раз при init и дальше принадлежит проекту. Версия кита в проекте —
@@ -63,8 +64,14 @@ def norm(text):
 
 
 def read_project(project, relpath):
+    """Файл проекта как текст; BOM снимается — иначе файл ядра навсегда «правлен в проекте»."""
     p = project / relpath
-    return p.read_bytes().decode("utf-8") if p.exists() else None
+    if not p.exists():
+        return None
+    try:
+        return p.read_bytes().decode("utf-8-sig")
+    except UnicodeDecodeError:
+        sys.exit(f"{relpath}: не UTF-8 — пересохранить в UTF-8 и повторить.")
 
 
 def write_project(project, relpath, content, like=None):
@@ -166,9 +173,12 @@ def cmd_sync(project, ref, dry_run):
         print(f"\n=== {path}: что изменили в проекте ===")
         print(diff(base_c, ours, "кит (база)", "проект") if base_c is not None
               else "(базовой версии нет — файл появился в проекте до кита)")
-        print(f"=== {path}: что изменилось в ките ===")
-        print(diff(base_c, theirs, "кит (база)", "кит (новый)") if base_c is not None
-              else diff(ours, theirs, "проект", "кит (новый)"))
+        if base_c is None:
+            print(f"=== {path}: проект против кита ===")
+            print(diff(ours, theirs, "проект", "кит (новый)"))
+        elif base != new:
+            print(f"=== {path}: что изменилось в ките ===")
+            print(diff(base_c, theirs, "кит (база)", "кит (новый)"))
     if dry_run:
         return
     if conflicts:
@@ -196,6 +206,20 @@ def cmd_status(project):
         print(f"  core  {path}: {state}")
 
 
+def cmd_take(project, ref, paths):
+    """Взять версию кита для файлов ядра — исход конфликта «взять версию кита»."""
+    if not paths:
+        sys.exit("take: укажите --path <файл ядра> (можно несколько раз).")
+    sha = resolve(ref)
+    manifest = manifest_at(sha)
+    for path in paths:
+        path = path.replace("\\", "/")
+        if manifest.get(path) != "core":
+            sys.exit(f"take: {path} — не файл ядра в kit/MANIFEST этой версии.")
+        write_project(project, path, read_at(sha, f"template/{path}"), like=read_project(project, path))
+        print(f"взята версия кита {version_at(sha)} ({sha[:12]}): {path}")
+
+
 def cmd_stamp(project, ref):
     sha = resolve(ref)
     write_stamp(project, sha)
@@ -206,10 +230,11 @@ def main():
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("command", choices=["init", "sync", "status", "stamp"])
+    ap.add_argument("command", choices=["init", "sync", "status", "stamp", "take"])
     ap.add_argument("--project", required=True, type=Path, help="корень проекта")
     ap.add_argument("--ref", default="HEAD", help="версия кита: коммит или тег (по умолчанию — текущий HEAD клона)")
     ap.add_argument("--dry-run", action="store_true", help="sync: только показать, ничего не писать")
+    ap.add_argument("--path", action="append", help="take: файл ядра, для которого взять версию кита")
     a = ap.parse_args()
     project = a.project.resolve()
     if not project.is_dir():
@@ -220,6 +245,8 @@ def main():
         cmd_sync(project, a.ref, a.dry_run)
     elif a.command == "status":
         cmd_status(project)
+    elif a.command == "take":
+        cmd_take(project, a.ref, a.path)
     else:
         cmd_stamp(project, a.ref)
 

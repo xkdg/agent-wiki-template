@@ -67,7 +67,7 @@ agent-wiki-template/
 │   └── skills/                 ← brief, init, sync, upstream
 ├── kit/
 │   ├── MANIFEST                ← какие файлы ядро (sync обновляет), какие заготовки (только init)
-│   ├── kit.py                  ← init / sync / status / stamp — Python 3.8+, только stdlib и git
+│   ├── kit.py                  ← init / sync / status / take / stamp — Python 3.8+, stdlib и git
 │   ├── INSTALL.md              ← процедуры для агента: init, sync, конфликты, миграция, upstream
 │   └── VERSION
 ├── .claude-plugin/marketplace.json

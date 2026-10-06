@@ -1,0 +1,16 @@
+{
+  "name": "agent-wiki",
+  "description": "Роли субагентов и общие скиллы кита agent-wiki-template: бриф фичи, развёртывание и синхронизация протокола агента и вики в проектах",
+  "author": {
+    "name": "xkdg"
+  },
+  "homepage": "https://github.com/xkdg/agent-wiki-template",
+  "repository": "https://github.com/xkdg/agent-wiki-template",
+  "keywords": [
+    "wiki",
+    "adr",
+    "subagents",
+    "requirements",
+    "brief"
+  ]
+}

@@ -1,0 +1,12 @@
+# Файлы, которые кит кладёт в проект. Путь — относительно template/ в ките и корня проекта.
+#   core — ядро: одинаково во всех проектах, sync перезаписывает (если в проекте не правили).
+#   seed — заготовка: создаётся один раз при init, дальше принадлежит проекту, sync не трогает.
+core  CLAUDE.md
+core  wiki/RULES.md
+core  wiki/adr/_TEMPLATE.md
+core  wiki/todo/_TEMPLATE.md
+seed  wiki/INDEX.md
+seed  wiki/context/QUICK_REF.md
+seed  wiki/context/PRODUCT.md
+seed  wiki/context/CONVENTIONS.md
+seed  wiki/todo/BACKLOG.md

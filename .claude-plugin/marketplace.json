@@ -1,0 +1,16 @@
+{
+  "name": "agent-wiki-template",
+  "owner": {
+    "name": "xkdg"
+  },
+  "metadata": {
+    "description": "Протокол агента + вики проекта: роли субагентов, бриф фичи, развёртывание и синхронизация кита"
+  },
+  "plugins": [
+    {
+      "name": "agent-wiki",
+      "source": "./plugin",
+      "description": "Роли субагентов (scout, implementer, reviewer, verifier, investigator, doc-auditor) и скиллы: brief — бриф фичи, init / sync / upstream — развёртывание и обновление кита agent-wiki-template в проектах"
+    }
+  ]
+}

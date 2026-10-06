@@ -173,7 +173,7 @@ def cmd_sync(project, ref, dry_run):
         return
     if conflicts:
         print(f"\nВерсия в {STAMP} не сдвинута. Разрешить конфликты (kit/INSTALL.md §Конфликты), затем:\n"
-              f"  python kit/kit.py stamp --project \"{project}\" --ref {new}")
+              f"  python \"{Path(__file__).resolve()}\" stamp --project \"{project}\" --ref {new}")
     else:
         write_stamp(project, new)
         print(f"\n{STAMP} → {version_at(new)}")
